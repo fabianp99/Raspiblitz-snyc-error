@@ -1,0 +1,313 @@
+
+
+***************************************************************
+* RASPIBLITZ DEBUG LOGS
+***************************************************************
+blitzversion: 1.10.0
+chainnetwork: bitcoin / test
+ 09:28:09 up 1 day, 19 min,  2 users,  load average: 1.35, 1.56, 1.66
+
+*** FAILED SERVICES ***
+list any servcies with problems: sudo systemctl list-units --failed
+  UNIT              LOAD   ACTIVE SUB    DESCRIPTION
+● bitcoind.service  loaded failed failed Bitcoin daemon on mainnet
+● lnd.service       loaded failed failed Lightning Network Daemon
+● logrotate.service loaded failed failed Rotate log files
+
+LOAD   = Reflects whether the unit definition was properly loaded.
+ACTIVE = The high-level unit activation state, i.e. generalization of SUB.
+SUB    = The low-level unit activation state, values depend on unit type.
+3 loaded units listed.
+
+*** SETUPPHASE / BOOTSTRAP ***
+see logs: cat /home/admin/raspiblitz.log
+setupPhase--> done
+state--> ready
+
+*** BACKGROUNDSERVICE ***
+to monitor Background service call: sudo journalctl -f -u background
+
+*** BLOCKCHAIN (MAINNET) SYSTEMD STATUS ***
+● bitcoind.service - Bitcoin daemon on mainnet
+     Loaded: loaded (/etc/systemd/system/bitcoind.service; enabled; vendor preset: enabled)
+     Active: failed (Result: exit-code) since Fri 2024-02-23 19:27:56 GMT; 14h ago
+    Process: 3718413 ExecStartPre=/home/admin/config.scripts/bitcoin.check.sh prestart mainnet (code=exited, status=0/SUCCESS)
+    Process: 3718442 ExecStart=/usr/local/bin/bitcoind -daemonwait -conf=/mnt/hdd/bitcoin/bitcoin.conf -datadir=/mnt/hdd/bitcoin (code=exited, status=1/FAILURE)
+        CPU: 230ms
+
+Feb 23 19:27:56 raspberrypi systemd[1]: bitcoind.service: Failed with result 'exit-code'.
+Feb 23 19:27:56 raspberrypi systemd[1]: Failed to start Bitcoin daemon on mainnet.
+
+*** LAST BLOCKCHAIN (MAINNET) ERROR LOGS ***
+sudo journalctl -u bitcoind -b --no-pager -n20
+-- Journal begins at Fri 2024-02-23 15:32:07 GMT, ends at Sat 2024-02-24 09:28:09 GMT. --
+Feb 23 19:27:56 raspberrypi systemd[1]: bitcoind.service: Failed with result 'exit-code'.
+Feb 23 19:27:56 raspberrypi systemd[1]: Failed to start Bitcoin daemon on mainnet.
+Feb 23 19:27:56 raspberrypi systemd[1]: bitcoind.service: Scheduled restart job, restart counter is at 5.
+Feb 23 19:27:56 raspberrypi systemd[1]: Stopped Bitcoin daemon on mainnet.
+Feb 23 19:27:56 raspberrypi systemd[1]: Starting Bitcoin daemon on mainnet...
+Feb 23 19:27:56 raspberrypi bitcoin.check.sh[3718420]: /bin/chgrp: changing group of '/mnt/hdd/bitcoin': Read-only file system
+Feb 23 19:27:56 raspberrypi bitcoin.check.sh[3718421]: sed: couldn't open temporary file /mnt/hdd/bitcoin/sedrJkCMK: Input/output error
+Feb 23 19:27:56 raspberrypi bitcoin.check.sh[3718423]: sed: couldn't open temporary file /mnt/hdd/bitcoin/sedeyYMQV: Input/output error
+Feb 23 19:27:56 raspberrypi bitcoin.check.sh[3718426]: grep: /mnt/hdd/bitcoin/bitcoin.conf: Input/output error
+Feb 23 19:27:56 raspberrypi bitcoin.check.sh[3718413]: /home/admin/config.scripts/bitcoin.check.sh: line 63: /mnt/hdd/bitcoin/bitcoin.conf: Read-only file system
+Feb 23 19:27:56 raspberrypi bitcoin.check.sh[3718427]: sed: couldn't open temporary file /mnt/hdd/bitcoin/sedebBGmc: Input/output error
+Feb 23 19:27:56 raspberrypi bitcoind[3718442]: Error: filesystem error: status: Input/output error [/mnt/hdd/bitcoin/settings.json]
+Feb 23 19:27:56 raspberrypi systemd[1]: bitcoind.service: Control process exited, code=exited, status=1/FAILURE
+Feb 23 19:27:56 raspberrypi systemd[1]: bitcoind.service: Failed with result 'exit-code'.
+Feb 23 19:27:56 raspberrypi systemd[1]: Failed to start Bitcoin daemon on mainnet.
+Feb 23 19:27:56 raspberrypi systemd[1]: bitcoind.service: Scheduled restart job, restart counter is at 6.
+Feb 23 19:27:56 raspberrypi systemd[1]: Stopped Bitcoin daemon on mainnet.
+Feb 23 19:27:56 raspberrypi systemd[1]: bitcoind.service: Start request repeated too quickly.
+Feb 23 19:27:56 raspberrypi systemd[1]: bitcoind.service: Failed with result 'exit-code'.
+Feb 23 19:27:56 raspberrypi systemd[1]: Failed to start Bitcoin daemon on mainnet.
+
+*** LAST BLOCKCHAIN (MAINNET) INFO LOGS ***
+sudo tail -n 50 /mnt/hdd/bitcoin/debug.log
+
+*** LND (MAINNET) SYSTEMD STATUS ***
+- OFF by config -
+
+*** CORE LIGHTNING (MAINNET) SYSTEMD STATUS ***
+- not activated -
+
+*** BLOCKCHAIN (TESTNET) SYSTEMD STATUS ***
+- OFF by config -
+*** LND (TESTNET) SYSTEMD STATUS ***
+- OFF by config -
+
+*** CORE LIGHTNING (TESTNET) SYSTEMD STATUS ***
+- not activated -
+
+*** BLOCKCHAIN (SIGNET) SYSTEMD STATUS ***
+- OFF by config -
+*** LND (SIGNET) SYSTEMD STATUS ***
+- OFF by config -
+
+*** CORE LIGHTNING (SIGNET) SYSTEMD STATUS ***
+- not activated -
+
+*** NGINX SYSTEMD STATUS ***
+● nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+    Drop-In: /etc/systemd/system/nginx.service.d
+             └─raspiblitz.conf
+     Active: active (running) since Fri 2024-02-23 08:59:22 GMT; 24h ago
+       Docs: man:nginx(8)
+   Main PID: 806 (nginx)
+      Tasks: 5 (limit: 9352)
+        CPU: 216ms
+     CGroup: /system.slice/nginx.service
+             ├─806 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+             ├─809 nginx: worker process
+             ├─810 nginx: worker process
+             ├─811 nginx: worker process
+             └─814 nginx: worker process
+
+Warning: journal has been rotated since unit was started, output may be incomplete.
+
+*** LAST NGINX LOGS ***
+sudo journalctl -u nginx -b --no-pager -n20
+-- Journal begins at Fri 2024-02-23 15:32:07 GMT, ends at Sat 2024-02-24 09:28:09 GMT. --
+-- No entries --
+--> CHECK CONFIG: sudo nginx -t
+nginx: [emerg] cannot load certificate "/mnt/hdd/app-data/nginx/tls.cert": BIO_new_file() failed (SSL: error:02001005:system library:fopen:Input/output error:fopen('/mnt/hdd/app-data/nginx/tls.cert','r') error:2006D002:BIO routines:BIO_new_file:system lib)
+nginx: configuration file /etc/nginx/nginx.conf test failed
+
+*** BLITZAPI STATUS ***
+installed=1
+repo='https://github.com/fusion44/blitz_api.git'
+branch='blitz-v1.10'
+commit='191c77b4d4cc5c9d97dc50da31e5cfb2e5bcb930'
+● blitzapi.service - BlitzBackendAPI
+     Loaded: loaded (/etc/systemd/system/blitzapi.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2024-02-23 08:59:22 GMT; 24h ago
+   Main PID: 807 (python)
+      Tasks: 13 (limit: 9352)
+        CPU: 32min 41.686s
+     CGroup: /system.slice/blitzapi.service
+             └─807 /home/blitzapi/blitz_api/venv/bin/python -m uvicorn app.main:app --port 11111 --host=*.*.*.* --root-path /api
+
+Feb 24 09:28:09 raspberrypi python[807]: 2024-02-24 09:28:09 | ℹ️ | utils.py:67 | Key 'tor_web_addr' not found in Redis DB.
+Feb 24 09:28:09 raspberrypi python[807]: 2024-02-24 09:28:09 | ⚠️ | utils.py:69 | Key 'hdd_capacity_bytes' not found in Redis DB.
+
+*** LAST BLITZAPI LOGS ***
+sudo journalctl -u blitzapi -b --no-pager -n20
+-- Journal begins at Fri 2024-02-23 15:32:07 GMT, ends at Sat 2024-02-24 09:28:10 GMT. --
+Feb 24 09:27:57 raspberrypi python[807]: 2024-02-24 09:27:57 | ℹ️ | utils.py:67 | Key 'tor_web_addr' not found in Redis DB.
+Feb 24 09:27:57 raspberrypi python[807]: 2024-02-24 09:27:57 | ⚠️ | utils.py:69 | Key 'hdd_capacity_bytes' not found in Redis DB.
+Feb 24 09:27:58 raspberrypi python[807]: 2024-02-24 09:27:58 | ❌ | service.py:194 | Aiohttp client connection error: Cannot connect to host *.*.*.*:8332 ssl:default [Connect call failed ('127.0.0.1', 8332)]
+Feb 24 09:27:59 raspberrypi python[807]: 2024-02-24 09:27:59 | ℹ️ | utils.py:67 | Key 'tor_web_addr' not found in Redis DB.
+Feb 24 09:27:59 raspberrypi python[807]: 2024-02-24 09:27:59 | ⚠️ | utils.py:69 | Key 'hdd_capacity_bytes' not found in Redis DB.
+Feb 24 09:28:00 raspberrypi python[807]: 2024-02-24 09:28:00 | ❌ | service.py:194 | Aiohttp client connection error: Cannot connect to host *.*.*.*:8332 ssl:default [Connect call failed ('127.0.0.1', 8332)]
+Feb 24 09:28:01 raspberrypi python[807]: 2024-02-24 09:28:01 | ℹ️ | utils.py:67 | Key 'tor_web_addr' not found in Redis DB.
+Feb 24 09:28:01 raspberrypi python[807]: 2024-02-24 09:28:01 | ⚠️ | utils.py:69 | Key 'hdd_capacity_bytes' not found in Redis DB.
+Feb 24 09:28:02 raspberrypi python[807]: 2024-02-24 09:28:02 | ❌ | service.py:194 | Aiohttp client connection error: Cannot connect to host *.*.*.*:8332 ssl:default [Connect call failed ('127.0.0.1', 8332)]
+Feb 24 09:28:03 raspberrypi python[807]: 2024-02-24 09:28:03 | ℹ️ | utils.py:67 | Key 'tor_web_addr' not found in Redis DB.
+Feb 24 09:28:03 raspberrypi python[807]: 2024-02-24 09:28:03 | ⚠️ | utils.py:69 | Key 'hdd_capacity_bytes' not found in Redis DB.
+Feb 24 09:28:04 raspberrypi python[807]: 2024-02-24 09:28:04 | ❌ | service.py:194 | Aiohttp client connection error: Cannot connect to host *.*.*.*:8332 ssl:default [Connect call failed ('127.0.0.1', 8332)]
+Feb 24 09:28:05 raspberrypi python[807]: 2024-02-24 09:28:05 | ℹ️ | utils.py:67 | Key 'tor_web_addr' not found in Redis DB.
+Feb 24 09:28:05 raspberrypi python[807]: 2024-02-24 09:28:05 | ⚠️ | utils.py:69 | Key 'hdd_capacity_bytes' not found in Redis DB.
+Feb 24 09:28:06 raspberrypi python[807]: 2024-02-24 09:28:06 | ❌ | service.py:194 | Aiohttp client connection error: Cannot connect to host *.*.*.*:8332 ssl:default [Connect call failed ('127.0.0.1', 8332)]
+Feb 24 09:28:07 raspberrypi python[807]: 2024-02-24 09:28:07 | ℹ️ | utils.py:67 | Key 'tor_web_addr' not found in Redis DB.
+Feb 24 09:28:07 raspberrypi python[807]: 2024-02-24 09:28:07 | ⚠️ | utils.py:69 | Key 'hdd_capacity_bytes' not found in Redis DB.
+Feb 24 09:28:08 raspberrypi python[807]: 2024-02-24 09:28:08 | ❌ | service.py:194 | Aiohttp client connection error: Cannot connect to host *.*.*.*:8332 ssl:default [Connect call failed ('127.0.0.1', 8332)]
+Feb 24 09:28:09 raspberrypi python[807]: 2024-02-24 09:28:09 | ℹ️ | utils.py:67 | Key 'tor_web_addr' not found in Redis DB.
+Feb 24 09:28:09 raspberrypi python[807]: 2024-02-24 09:28:09 | ⚠️ | utils.py:69 | Key 'hdd_capacity_bytes' not found in Redis DB.
+
+*** BLITZ WebUI STATUS ***
+installed=1
+repo='https://github.com/raspiblitz/raspiblitz-web.git'
+branch='release/v1.10'
+commit='64de1160e5a65ca179b8e41cd0ba1348539dff34'
+
+- TOUCHSCREEN is OFF by config
+- Loop is OFF by config
+- LND-RTL is OFF by config
+- CL-RTL is OFF by config
+- Electrum Rust Server is OFF by config
+- LIT is OFF by config
+- LNDg is OFF by config
+* BTCPayServer is OFF by config
+* BTC-RPC-Explorer is OFF by config
+- LNbits is OFF by config
+- Thunderhub is OFF by config
+- SPECTER is OFF by config
+- SPHINX is OFF by config
+- FINTS is OFF by config
+
+*** MOUNTED DRIVES ***
+df -T -h
+Filesystem     Type      Size  Used Avail Use% Mounted on
+/dev/root      ext4       29G   15G   13G  54% /
+devtmpfs       devtmpfs  3.9G     0  3.9G   0% /dev
+tmpfs          tmpfs     3.9G   16K  3.9G   1% /dev/shm
+tmpfs          tmpfs     1.6G  1.1M  1.6G   1% /run
+tmpfs          tmpfs     5.0M     0  5.0M   0% /run/lock
+tmpfs          tmpfs      32M   12K   32M   1% /var/cache/raspiblitz
+/dev/mmcblk0p1 vfat      255M   31M  225M  13% /boot
+/dev/sda1      ext4      916G   99G  771G  12% /mnt/hdd
+tmpfs          tmpfs     787M   16K  787M   1% /run/user/1000
+tmpfs          tmpfs     787M   16K  787M   1% /run/user/117
+
+*** SD CARD HOMES ***
+sudo du -ahd1 /home
+1.4G    /home/mempool
+891M    /home/bitcoin
+35M     /home/pi
+2.4G    /home/btcpay
+430M    /home/admin
+177M    /home/btcrpcexplorer
+450M    /home/rtl
+586M    /home/joinmarket
+565M    /home/jam
+1.6G    /home/thunderhub
+663M    /home/lnbits
+816M    /home/blitzapi
+9.8G    /home
+
+*** LOGFILES ***
+Archived and active journals take up 294.0M in the file system.
+418M    /var/log
+
+*** DATADRIVE ***
+# RASPIBLITZ DATA DRIVE Status
+
+# BASICS
+isMounted=1
+isBTRFS=0
+hddRaspiData=0
+hddRaspiVersion=''
+isSMART=0
+isSSD=0
+datadisk='sda'
+datapartition='sda1'
+hddCandidate='sda'
+hddPartitionCandidate='sda1'
+hddBlocksBitcoin=0
+hddBytes=
+hddGigaBytes=
+hddUsedInfo='15G
+16K
+31M
+99G (5411312%)'
+error='unkown command'
+
+*** NETWORK ***
+localip=*.*.*.*
+localiprange=*.*.*.*/24
+dhcp=1
+network_device=eth0
+
+
+*** ZRAM ***
+downloaded=1
+serviceLoaded=1
+serviceActive=1
+
+*** HARDWARE TEST RESULTS ***
+UndervoltageReports in Logs: 0
+
+*** SYSTEM CACHE STATUS ***
+system_temp_celsius="51"
+system_ram_gb="8"
+system_ups_battery=""
+system_cpu_load=" 2.37, 1.80, 1.73"
+system_count_longscan="2"
+system_ups_status="OFF"
+system_ram_available_mb="7388"
+system_init_time="1708678766"
+system_count_start_lightning="1"
+system_count_undervoltage="0"
+system_board="rp4"
+system_vm_vagrant="0"
+system_count_start_blockchain="6"
+system_ram_mb="7862"
+system_temp_fahrenheit="124"
+system_up="87594"
+ln_default_channels_inactive="0"
+ln_default_ready="0"
+ln_default_alias=****
+ln_default_running="0"
+ln_default_locked="0"
+ln_default_channels_total="0"
+ln_default_sync_chain="0"
+ln_default_wallet_onchain_balance=****
+ln_default_sync_progress="50.60"
+ln_default_tor="0"
+ln_default_activated="1"
+ln_default_recovery_done="0"
+ln_default_fees_total="0"
+ln_default_wallet_onchain_pending="0"
+ln_default_error_short=""
+ln_default_version="0.16.4-beta"
+ln_default_wallet_channels_balance=****
+ln_default_channels_active="0"
+ln_default_channels_pending="0"
+ln_default_sync_initial_done="0"
+ln_default_wallet_channels_pending="0"
+ln_default_online="0"
+ln_default_peers="0"
+ln_default_error_full=""
+ln_default_recovery_mode="1"
+btc_default_blocks_behind="403969"
+btc_default_mempool_transactions="0"
+btc_default_version="v25.0.0"
+btc_default_sync_initialblockdownload="1"
+btc_default_online="0"
+btc_default_running="0"
+btc_default_error_short=""
+btc_default_blocks_headers="831722"
+btc_default_sync_progress="0.1657398866188314"
+btc_default_peers="10"
+btc_default_activated="1"
+btc_default_sync_percentage="16.57"
+btc_default_blocks_data_kb="91532620"
+btc_default_ready="0"
+btc_default_port="8333"
+btc_default_error_full=""
+btc_default_sync_initial_done="0"
+btc_default_blocks_verified="427753"
+btc_default_synced="0"
+*** POSSIBLE ERROR REPORTS ***
+
